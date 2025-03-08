@@ -1,39 +1,63 @@
-import { useState } from "react";
+import { useState , useRef, useEffect} from "react";
 
 
 export default function Blog(){
 
-    const [title, setTitle] = useState("");
+    // const [title, setTitle] = useState("");
 
-    const [content, setContent] = useState("");
+
+    // const [content, setContent] = useState("");
+
+    const [formData, setFormData] = useState({title : "", content: ""});
 
     const [blogs, setBlogs] = useState([]);
+    const titleRef = useRef(null);
+    console.log("tileref", titleRef);
+
+    useEffect(() => {
+        titleRef.current.focus();
+    }, [])
+
 
 
 
     function handleSubmit(e){
         e.preventDefault();
-        setBlogs([{title, content}, ...blogs]);
-        console.log("blogs", blogs);
-        setTitle("");
-        setContent("");
+        setBlogs([{title : formData.title, content : formData.content}, ...blogs]);
+        // console.log("blogs", blogs);
+        // setTitle("");
+        // setContent("");
+        setFormData({title : "", content : ""});
+        // console.log("cu", titleRef.current);
+        titleRef.current.focus();
+        // console.log("val", titleRef.current.value);
+
+        
+
+    }
+
+    function removeBlog(i) {
+        setBlogs(blogs.filter((blog, index) => i!== index));
     }
 
     return (
+        
         <>
 
         <h1>Write a Blog!</h1>
         <div className="section">
             <form onSubmit={handleSubmit}>
                 <Row label="Title">
-                    <input value={title} className="input" placeholder="Enter the title here.."
-                    onChange={(e) => setTitle(e.target.value)} />
+                    <input 
+                    ref={titleRef}
+                    value={formData.title} className="input" placeholder="Enter the title here.."
+                    onChange={(e) => setFormData({title : e.target.value, content : formData.content})} />
 
                 </Row>
                 <Row label="Content">
                     <textarea  
-                    onChange={(e) => setContent(e.target.value)}
-                    value={content} className="input content" placeholder="Content goes here..." />
+                    onChange={(e) => setFormData({title : formData.title, content : e.target.value})}
+                    value={formData.content} className="input content" placeholder="Content goes here..." />
                     
                 </Row>
                 <button className="btn">ADD</button>
@@ -48,6 +72,11 @@ export default function Blog(){
                 <div className="blog" key={i}>
                     <h3>{blog.title}</h3>
                     <p>{blog.content}</p>
+                    <div className="blog-btn">
+                        <button onClick={() => removeBlog(i)} className="btn remove">
+                            Delete
+                        </button>
+                    </div>
                 </div>
             )
         })}
