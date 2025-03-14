@@ -19,12 +19,25 @@ export default function Blog(){
     }, [])
 
 
+    useEffect(() => {
+        console.log("ooo");
+        if(blogs.length && blogs[0].title){
+            document.title = blogs[0].title;
+            
+        }else{
+            document.title= "no blogs";
+        }
+
+        
+    }, [blogs])
+
+
 
 
     function handleSubmit(e){
         e.preventDefault();
         setBlogs([{title : formData.title, content : formData.content}, ...blogs]);
-        // console.log("blogs", blogs);
+        console.log("blogs", blogs);
         // setTitle("");
         // setContent("");
         setFormData({title : "", content : ""});
@@ -49,6 +62,7 @@ export default function Blog(){
             <form onSubmit={handleSubmit}>
                 <Row label="Title">
                     <input 
+                    required
                     ref={titleRef}
                     value={formData.title} className="input" placeholder="Enter the title here.."
                     onChange={(e) => setFormData({title : e.target.value, content : formData.content})} />
@@ -56,6 +70,7 @@ export default function Blog(){
                 </Row>
                 <Row label="Content">
                     <textarea  
+                    required
                     onChange={(e) => setFormData({title : formData.title, content : e.target.value})}
                     value={formData.content} className="input content" placeholder="Content goes here..." />
                     
